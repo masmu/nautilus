@@ -130,5 +130,7 @@
 #define NAUTILUS_ACTION_SORT_TRASH_TIME "Sort by Trash Time"
 #define NAUTILUS_ACTION_SORT_SEARCH_RELEVANCE "Sort by Search Relevance"
 #define NAUTILUS_ACTION_CHANGE_BACKGROUND "Change Background"
+#define NAUTILUS_ACTION_SORT_BY_NAME "Sort by Name"
+#define NAUTILUS_ACTION_SORT_BY_SIZE "Sort by Size"
 
 #endif /* NAUTILUS_ACTIONS_H */

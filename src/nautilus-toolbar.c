@@ -29,6 +29,7 @@
 #include "nautilus-location-entry.h"
 #include "nautilus-pathbar.h"
 #include "nautilus-actions.h"
+#include "nautilus-view-menu.h"
 
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-ui-utilities.h>
@@ -51,6 +52,10 @@ struct _NautilusToolbarPriv {
 	gboolean show_location_entry;
 
 	guint popup_timeout_id;
+
+	GtkWidget *view_button;
+    GtkWidget *view_menu_popover;
+    GtkWidget *view_menu;
 };
 
 enum {
@@ -461,11 +466,29 @@ nautilus_toolbar_constructed (GObject *obj)
 	button = toolbar_create_toolbutton (self, FALSE, TRUE, NAUTILUS_ACTION_VIEW_GRID, NULL);
 	gtk_widget_set_valign (button, GTK_ALIGN_CENTER);
 	gtk_container_add (GTK_CONTAINER (box), button);
+
+    /* View menu popver */
+	self->priv->view_button = gtk_menu_button_new ();
+    self->priv->view_menu_popover = gtk_popover_new (self->priv->view_button);
+	menu = gtk_ui_manager_get_widget (ui_manager, "/ViewMenu");
+	//gtk_widget_reparent (GTK_WIDGET (menu), GTK_WIDGET (self->priv->view_menu_popover));
+    gtk_popover_new_from_model (GTK_MENU_BUTTON (self->priv->view_button),
+                                GTK_MENU_MODEL (menu));
+    /*gtk_menu_button_set_popover (GTK_MENU_BUTTON (self->priv->view_button),
+                                 self->priv->view_menu_popover);
+                                 */
+    //self->priv->view_menu = nautilus_view_menu_new (self->priv->window);
+    /*gtk_container_add (GTK_CONTAINER (self->priv->view_menu_popover),
+                       GTK_WIDGET (menu));*/
+   // gtk_widget_show_all (GTK_WIDGET (self->priv->view_menu));
+	gtk_container_add (GTK_CONTAINER (box), self->priv->view_button);
+
+    /* View options */
 	button = toolbar_create_toolbutton (self, TRUE, FALSE, "go-down-symbolic", _("View options"));
 	gtk_widget_set_valign (button, GTK_ALIGN_CENTER);
 	gtk_container_add (GTK_CONTAINER (box), button);
-	menu = gtk_ui_manager_get_widget (ui_manager, "/ViewMenu");
-	gtk_menu_button_set_popup (GTK_MENU_BUTTON (button), menu);
+	//menu = gtk_ui_manager_get_widget (ui_manager, "/ViewMenu");
+	//gtk_menu_button_set_popup (GTK_MENU_BUTTON (button), menu);
 
 	gtk_style_context_add_class (gtk_widget_get_style_context (box),
 				     GTK_STYLE_CLASS_RAISED);
