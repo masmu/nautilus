@@ -209,8 +209,14 @@ struct NautilusCanvasContainerDetails {
 	gboolean single_click_mode;
 	gboolean auto_layout;
 
+	/* Layout mode */
+	NautilusIconLayoutMode layout_mode;
+
 	/* Label position */
 	NautilusCanvasLabelPosition label_position;
+
+	/* Forced icon size, iff greater than 0 */
+	int forced_icon_size;
 
 	/* Should the container keep icons aligned to a grid */
 	gboolean keep_aligned;

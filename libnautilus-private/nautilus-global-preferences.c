@@ -36,6 +36,7 @@
 GSettings *nautilus_preferences;
 GSettings *nautilus_icon_view_preferences;
 GSettings *nautilus_list_view_preferences;
+GSettings *nautilus_compact_view_preferences;
 GSettings *nautilus_desktop_preferences;
 GSettings *nautilus_window_state;
 GSettings *gtk_filechooser_preferences;
@@ -58,6 +59,8 @@ nautilus_global_preferences_get_default_folder_viewer_preference_as_iid (void)
 
 	if (preference_value == NAUTILUS_DEFAULT_FOLDER_VIEWER_LIST_VIEW) {
 		viewer_iid = NAUTILUS_LIST_VIEW_IID;
+	} else if (preference_value == NAUTILUS_DEFAULT_FOLDER_VIEWER_COMPACT_VIEW) {
+		viewer_iid = NAUTILUS_COMPACT_VIEW_IID;
 	} else {
 		viewer_iid = NAUTILUS_CANVAS_VIEW_IID;
 	}
@@ -80,6 +83,7 @@ nautilus_global_preferences_init (void)
 	nautilus_window_state = g_settings_new("org.gnome.nautilus.window-state");
 	nautilus_icon_view_preferences = g_settings_new("org.gnome.nautilus.icon-view");
 	nautilus_list_view_preferences = g_settings_new("org.gnome.nautilus.list-view");
+	nautilus_compact_view_preferences = g_settings_new("org.gnome.nautilus.compact-view");
 	nautilus_desktop_preferences = g_settings_new("org.gnome.nautilus.desktop");
         /* Some settings such as show hidden files are shared between Nautilus and GTK file chooser */
         gtk_filechooser_preferences = g_settings_new_with_path ("org.gtk.Settings.FileChooser",
