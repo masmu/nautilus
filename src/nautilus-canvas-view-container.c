@@ -82,8 +82,10 @@ nautilus_canvas_view_container_get_icon_images (NautilusCanvasContainer *contain
 	
 	*has_window_open = nautilus_file_has_open_window (file);
 
-	flags = NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON_AS_EMBLEM |
-		NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS;
+	flags = NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON_AS_EMBLEM;
+	if (nautilus_canvas_container_get_zoom_level (container) >= nautilus_file_get_thumbnail_zoom_limit()) {
+		flags = flags | NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS;
+	}
 
 	if (use_embedding) {
 		flags |= NAUTILUS_FILE_ICON_FLAGS_EMBEDDING_TEXT;
@@ -96,6 +98,9 @@ nautilus_canvas_view_container_get_icon_images (NautilusCanvasContainer *contain
 	icon_info = nautilus_file_get_icon (file, size, scale, flags);
 	emblem_icons = nautilus_file_get_emblem_icons (file);
 
+	if (size > NAUTILUS_EMBLEM_MAXIMUM_SIZE) {
+		size = NAUTILUS_EMBLEM_MAXIMUM_SIZE;
+	}
 	/* apply emblems */
 	if (emblem_icons != NULL) {
 		l = emblem_icons;

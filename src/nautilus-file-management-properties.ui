@@ -296,6 +296,98 @@
                                 <property name="position">0</property>
                               </packing>
                             </child>
+                            <child>
+                              <object class="GtkBox" id="hbox335">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="spacing">12</property>
+                                <child>
+                                  <object class="GtkLabel" id="views_label_32">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="xalign">0</property>
+                                    <property name="label" translatable="yes">Use tighter layout when zoom level at least:</property>
+                                    <property name="use_underline">True</property>
+                                    <property name="mnemonic_widget">icon_view_tighter_combobox</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkComboBox" id="icon_view_tighter_combobox">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="model">model_zoom_choice</property>
+                                    <child>
+                                      <object class="GtkCellRendererText" id="renderer33"/>
+                                      <attributes>
+                                        <attribute name="text">0</attribute>
+                                      </attributes>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+
+                            <child>
+                              <object class="GtkBox" id="hbox435">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="spacing">12</property>
+                                <child>
+                                  <object class="GtkLabel" id="views_label_42">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="xalign">0</property>
+                                    <property name="label" translatable="yes">Limit text width when zoom level at least:</property>
+                                    <property name="use_underline">True</property>
+                                    <property name="mnemonic_widget">icon_view_restrict_text_width_combobox</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkComboBox" id="icon_view_restrict_text_width_combobox">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="model">model_zoom_choice</property>
+                                    <child>
+                                      <object class="GtkCellRendererText" id="renderer43"/>
+                                      <attributes>
+                                        <attribute name="text">0</attribute>
+                                      </attributes>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+
                           </object>
                         </child>
                       </object>
@@ -1093,6 +1185,7 @@
                                 <property name="position">0</property>
                               </packing>
                             </child>
+
                             <child>
                               <object class="GtkBox" id="hbox21">
                                 <property name="visible">True</property>
@@ -1138,6 +1231,53 @@
                                 <property name="position">1</property>
                               </packing>
                             </child>
+
+                            <child>
+                              <object class="GtkBox" id="hbox51">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="spacing">12</property>
+                                <child>
+                                  <object class="GtkLabel" id="preview_label_51">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="xalign">0</property>
+                                    <property name="label" translatable="yes">Only if zoom level at least:</property>
+                                    <property name="use_underline">True</property>
+                                    <property name="mnemonic_widget">preview_image_zoom_combobox</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkComboBox" id="preview_image_zoom_combobox">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="model">model_zoom_choice</property>
+                                    <child>
+                                      <object class="GtkCellRendererText" id="renderer58"/>
+                                      <attributes>
+                                        <attribute name="text">0</attribute>
+                                      </attributes>
+                                    </child>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">True</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">2</property>
+                              </packing>
+                            </child>
+
                           </object>
                         </child>
                       </object>
@@ -1501,6 +1641,68 @@
       </row>
       <row>
         <col id="0" translatable="yes">Local Files Only</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Never</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="model_zoom_choice">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Always</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">33%</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">50%</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">66%</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">100%</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">150%</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">200%</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">300%</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">400%</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">500%</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">600%</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">700%</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">800%</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">900%</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">1000%</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">1100%</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">1200%</col>
       </row>
       <row>
         <col id="0" translatable="yes">Never</col>

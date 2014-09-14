@@ -46,6 +46,27 @@
     <value nick="end" value="1"/>
   </enum>
 
+  <enum id="org.gnome.nautilus.ZoomChoice">
+    <value nick="always" value="0"/>
+    <value nick="smallest" value="1"/>
+    <value nick="smaller" value="2"/>
+    <value nick="small" value="3"/>
+    <value nick="standard" value="4"/>
+    <value nick="large" value="5"/>
+    <value nick="larger" value="6"/>
+    <value nick="special1" value="7"/>
+    <value nick="special2" value="8"/>
+    <value nick="special3" value="9"/>
+    <value nick="special4" value="10"/>
+    <value nick="special5" value="11"/>
+    <value nick="special6" value="12"/>
+    <value nick="special7" value="13"/>
+    <value nick="special8" value="14"/>
+    <value nick="special9" value="15"/>
+    <value nick="largest" value="16"/>
+    <value nick="never" value="17"/>
+  </enum>
+
   <schema id="org.gnome.nautilus" path="/org/gnome/nautilus/" gettext-domain="nautilus">
     <child name="preferences" schema="org.gnome.nautilus.preferences"/>
     <child name="icon-view" schema="org.gnome.nautilus.icon-view"/>
@@ -125,6 +146,11 @@
       <_summary>Maximum image size for thumbnailing</_summary>
       <_description>Images over this size (in bytes) won't be  thumbnailed. The purpose of this setting is to  avoid thumbnailing large images that may take a long time to load or use lots of memory.</_description>
     </key>
+    <key name="thumbnail-zoom-limit" enum="org.gnome.nautilus.ZoomChoice">
+      <default>'small'</default>
+      <_summary>Show thumbnails of files depending on zoom level</_summary>
+      <_description>Images will only be thumbnailed when over a specific zoom level.</_description>
+    </key>
     <key name="sort-directories-first" type="b">
       <default>false</default>
       <_summary>Show folders first in windows</_summary>
@@ -185,6 +211,16 @@
       <default>64</default>
       <_summary>Default Thumbnail Icon Size</_summary>
       <_description>The default size of an icon for a thumbnail in the icon view.</_description>
+    </key>
+    <key name="tighter-layout-limit" enum="org.gnome.nautilus.ZoomChoice">
+      <default>'never'</default>
+      <_summary>Use a tighter layout when reaching a specific zoom level.</_summary>
+      <_description>After a specific zoom level a tighter layout should be used.</_description>
+    </key>
+    <key name="restrict-text-width-limit" enum="org.gnome.nautilus.ZoomChoice">
+      <default>'larger'</default>
+      <_summary>Limit the text width when reaching a specific zoom level.</_summary>
+      <_description>After a specific zoom level the text width of an icon gets restricted to be maximal the icon width.</_description>
     </key>
     <key name="text-ellipsis-limit" type="as">
       <default>[ '3' ]</default>
