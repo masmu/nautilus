@@ -303,6 +303,8 @@ void              nautilus_canvas_container_start_renaming_selected_item  (Nauti
 									   gboolean                select_all);
 
 /* options */
+NautilusZoomLevel nautilus_canvas_container_get_tighter_layout_limit      (void);
+NautilusZoomLevel nautilus_canvas_container_get_restrict_text_width_limit (void);
 NautilusZoomLevel nautilus_canvas_container_get_zoom_level                (NautilusCanvasContainer  *view);
 void              nautilus_canvas_container_set_zoom_level                (NautilusCanvasContainer  *view,
 									   int                     new_zoom_level);

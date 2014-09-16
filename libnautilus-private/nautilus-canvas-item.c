@@ -1994,6 +1994,18 @@ nautilus_canvas_item_get_max_text_width (NautilusCanvasItem *item)
 
 	canvas_item = EEL_CANVAS_ITEM (item);
 
+	NautilusCanvasContainer *container;
+	container = NAUTILUS_CANVAS_CONTAINER (EEL_CANVAS_ITEM (item)->canvas);
+
+	int restrict_level = nautilus_canvas_container_get_restrict_text_width_limit();
+	if (restrict_level == NAUTILUS_LAYOUT_LEVEL_ALWAYS ||
+		nautilus_canvas_container_get_zoom_level(container) >= restrict_level - 1 ) {
+		gint pix_width;
+		if (item->details->pixbuf) {
+			get_scaled_icon_size (item, &pix_width, NULL);
+			return MAX(MAX_TEXT_WIDTH_STANDARD, pix_width);
+		}
+	}
 	return MAX_TEXT_WIDTH_STANDARD * canvas_item->canvas->pixels_per_unit;
 }
 

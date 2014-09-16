@@ -218,6 +218,7 @@ char *                  nautilus_file_peek_top_left_text                (Nautilu
 									 gboolean                       *got_top_left_text);
 gboolean                nautilus_file_get_directory_item_mime_types     (NautilusFile                   *file,
 									 GList                         **mime_list);
+NautilusZoomLevel       nautilus_file_get_thumbnail_zoom_limit          (void);
 
 void                    nautilus_file_set_search_relevance              (NautilusFile                   *file,
 									 gdouble                         relevance);
