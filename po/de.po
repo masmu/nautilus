@@ -2233,6 +2233,15 @@ msgstr ""
 "lange Ladezeiten oder hohen Speicherverbrauch zur Folge hätte."
 
 #: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:27
+msgid "Show thumbnails of files depending on zoom level"
+msgstr "Zeige Vorschaubilder abhängig vom Zoom-Level an"
+
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:28
+msgid "Images will only be thumbnailed when over a specific zoom level."
+msgstr ""
+"Von Bildern werden Vorschaubilder abgezeigt ab einem bestimmten Zoom-Level."
+
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:29
 msgid "Show folders first in windows"
 msgstr "Ordner in Fenstern zuerst anzeigen?"
 
@@ -2357,7 +2366,29 @@ msgstr ""
 "Die Standardgröße eines Symbols für ein Miniatur-Vorschaubild in der "
 "Symbolansicht."
 
-#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:45
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:47
+msgid "Use a tighter layout when reaching a specific zoom level."
+msgstr "Benutze ein engeres Layout ab einem bestimmten Zoom-Level."
+
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:48
+msgid "After a specific zoom level a tighter layout should be used."
+msgstr ""
+"Ab einem spezifischen Zoom-Level soll ein engeres Layout verwendet werden."
+
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:49
+msgid "Limit the text width when reaching a specific zoom level."
+msgstr ""
+"Ab einem spezifischen Zoom-Level soll die Textbreite beschränkt werden."
+
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:50
+msgid ""
+"After a specific zoom level the text width of an icon gets restricted to be "
+"maximal the icon width."
+msgstr ""
+"Ab einem spezifischen Zoom-Level wird die Textbreite der Icons auf die "
+"maximale Iconbreite beschränkt."
+
+#: ../libnautilus-private/org.gnome.nautilus.gschema.xml.in.h:51
 msgid "Text Ellipsis Limit"
 msgstr "Lange Dateinamen kürzen"
 
@@ -3259,6 +3290,14 @@ msgid "Default _zoom level:"
 msgstr "_Voreingestellte Vergrößerungsstufe:"
 
 #: ../src/nautilus-file-management-properties.ui.h:9
+msgid "Use tighter layout when zoom level at least:"
+msgstr "Engeres Layout anwenden wenn mindestens Zoom-Level:"
+
+#: ../src/nautilus-file-management-properties.ui.h:10
+msgid "Limit text width when zoom level at least:"
+msgstr "Textbreite beschränken wenn mindestens Zoom-Level:"
+
+#: ../src/nautilus-file-management-properties.ui.h:11
 msgid "List View Defaults"
 msgstr "Vorgaben für Listenansicht"
 
@@ -3360,6 +3399,10 @@ msgstr "_Miniatur-Vorschaubilder anzeigen:"
 #: ../src/nautilus-file-management-properties.ui.h:31
 msgid "_Only for files smaller than:"
 msgstr "_Nur für Dateien kleiner als:"
+
+#: ../src/nautilus-file-management-properties.ui.h:34
+msgid "Only if zoom level at least:"
+msgstr "Nur wenn Zoom-Level mindestens:"
 
 #: ../src/nautilus-file-management-properties.ui.h:32
 #: ../src/nautilus-properties-window.c:4479
@@ -3488,6 +3531,51 @@ msgstr "2 GB"
 #: ../src/nautilus-file-management-properties.ui.h:68
 msgid "4 GB"
 msgstr "4 GB"
+
+#: ../src/nautilus-file-management-properties.ui.h:73
+#, no-c-format
+msgid "300%"
+msgstr "300%"
+
+#: ../src/nautilus-file-management-properties.ui.h:75
+#, no-c-format
+msgid "500%"
+msgstr "500%"
+
+#: ../src/nautilus-file-management-properties.ui.h:77
+#, no-c-format
+msgid "600%"
+msgstr "600%"
+
+#: ../src/nautilus-file-management-properties.ui.h:79
+#, no-c-format
+msgid "700%"
+msgstr "700%"
+
+#: ../src/nautilus-file-management-properties.ui.h:81
+#, no-c-format
+msgid "800%"
+msgstr "800%"
+
+#: ../src/nautilus-file-management-properties.ui.h:83
+#, no-c-format
+msgid "900%"
+msgstr "900%"
+
+#: ../src/nautilus-file-management-properties.ui.h:85
+#, no-c-format
+msgid "1000%"
+msgstr "1000%"
+
+#: ../src/nautilus-file-management-properties.ui.h:87
+#, no-c-format
+msgid "1100%"
+msgstr "1100%"
+
+#: ../src/nautilus-file-management-properties.ui.h:89
+#, no-c-format
+msgid "1200%"
+msgstr "1200%"
 
 #: ../src/nautilus-image-properties-page.c:331
 msgid "Image Type"

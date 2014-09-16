@@ -98,7 +98,7 @@
 #define CONTAINER_PAD_TOP 4
 #define CONTAINER_PAD_BOTTOM 4
 
-#define STANDARD_ICON_GRID_WIDTH 155
+#define STANDARD_ICON_GRID_WIDTH 96
 
 /* Desktop layout mode defines */
 #define DESKTOP_PAD_HORIZONTAL 	10
@@ -1259,6 +1259,10 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
 	double max_text_width, max_icon_width;
 	int icon_width;
 	int i;
+	int zoom_level;
+	int max_width;
+	int default_icon_width;
+	gboolean use_grid = TRUE;
 	GtkAllocation allocation;
 
 	g_assert (NAUTILUS_IS_CANVAS_CONTAINER (container));
@@ -1288,9 +1292,30 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
 
 		grid_width = max_icon_width + max_text_width + ICON_PAD_LEFT + ICON_PAD_RIGHT;
 	} else {
-		grid_width = STANDARD_ICON_GRID_WIDTH;
-	}
+		zoom_level = nautilus_canvas_container_get_zoom_level(container);
+		default_icon_width = nautilus_get_icon_size_for_zoom_level(zoom_level);
 
+		// QOS should i cache this?
+		max_width = 0;
+		for (p = icons; p != NULL; p = p->next) {
+			icon = p->data;
+			nautilus_canvas_item_get_bounds_for_layout (icon->item,
+									   &bounds.x0, &bounds.y0,
+									   &bounds.x1, &bounds.y1);
+			if ((bounds.x1 - bounds.x0) > max_width) {
+				max_width = (bounds.x1 - bounds.x0);
+			}
+		}
+
+		grid_width = MAX(STANDARD_ICON_GRID_WIDTH, max_width);
+
+		int tighter_level= nautilus_canvas_container_get_tighter_layout_limit();
+		if (tighter_level== NAUTILUS_LAYOUT_LEVEL_ALWAYS ||
+			nautilus_canvas_container_get_zoom_level(container) >= tighter_level - 1 ) {
+			use_grid = FALSE;
+		}
+	}
+	
 	line_width = container->details->label_position == NAUTILUS_CANVAS_LABEL_POSITION_BESIDE ? ICON_PAD_LEFT : 0;
 	line_start = icons;
 	y = start_y + CONTAINER_PAD_TOP;
@@ -1309,7 +1334,19 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
 		icon_bounds = nautilus_canvas_item_get_icon_rectangle (icon->item);
 		text_bounds = nautilus_canvas_item_get_text_rectangle (icon->item, TRUE);
 
-		icon_width = ceil ((bounds.x1 - bounds.x0)/grid_width) * grid_width;
+		if (container->details->label_position == NAUTILUS_CANVAS_LABEL_POSITION_BESIDE) {
+			icon_width = ceil ((bounds.x1 - bounds.x0)/grid_width) * grid_width;
+		} else {
+			if (use_grid == TRUE) {
+				if (default_icon_width > STANDARD_ICON_GRID_WIDTH) {
+					icon_width = max_width + ICON_PAD_RIGHT;
+				} else {
+					icon_width = ceil ((bounds.x1 - bounds.x0)/grid_width) * grid_width;
+				}
+			} else {
+				icon_width = (bounds.x1 - bounds.x0) + ICON_PAD_RIGHT;
+			}
+		}
 		
 		/* Calculate size above/below baseline */
 		height_above = icon_bounds.y1 - bounds.y0;
@@ -1380,6 +1417,44 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
 	}
 
 	g_array_free (positions, TRUE);
+}
+
+static void
+get_max_icon_dimensions (GList *icon_start,
+			 GList *icon_end,
+			 double *max_icon_width,
+			 double *max_icon_height,
+			 double *max_text_width,
+			 double *max_text_height,
+			 double *max_bounds_height)
+{
+	NautilusCanvasIcon *icon;
+	EelDRect icon_bounds;
+	EelDRect text_bounds;
+	GList *p;
+	double y1, y2;
+
+	*max_icon_width = *max_text_width = 0.0;
+	*max_icon_height = *max_text_height = 0.0;
+	*max_bounds_height = 0.0;
+
+	/* Would it be worth caching these bounds for the next loop? */
+	for (p = icon_start; p != icon_end; p = p->next) {
+		icon = p->data;
+
+		icon_bounds = nautilus_canvas_item_get_icon_rectangle (icon->item);
+		*max_icon_width = MAX (*max_icon_width, ceil (icon_bounds.x1 - icon_bounds.x0));
+		*max_icon_height = MAX (*max_icon_height, ceil (icon_bounds.y1 - icon_bounds.y0));
+
+		text_bounds = nautilus_canvas_item_get_text_rectangle (icon->item, TRUE);
+		*max_text_width = MAX (*max_text_width, ceil (text_bounds.x1 - text_bounds.x0));
+		*max_text_height = MAX (*max_text_height, ceil (text_bounds.y1 - text_bounds.y0));
+
+		nautilus_canvas_item_get_bounds_for_layout (icon->item,
+								 NULL, &y1,
+								 NULL, &y2);
+		*max_bounds_height = MAX (*max_bounds_height, y2 - y1);
+	}
 }
 
 static void
@@ -5463,6 +5538,8 @@ handle_focus_out_event (GtkWidget *widget, GdkEventFocus *event, gpointer user_d
 
 static int text_ellipsis_limits[NAUTILUS_ZOOM_LEVEL_N_ENTRIES];
 static int desktop_text_ellipsis_limit;
+static int tighter_layout_limit;
+static int restrict_text_width_limit;
 
 static gboolean
 get_text_ellipsis_limit_for_zoom (char **strs,
@@ -5545,6 +5622,36 @@ desktop_text_ellipsis_limit_changed_callback (gpointer callback_data)
 }
 
 static void
+tighter_layout_limit_changed_callback (gpointer callback_data)
+{
+	NautilusLayoutLevel pref;
+	pref = g_settings_get_enum (nautilus_icon_view_preferences, NAUTILUS_PREFERENCES_ICON_VIEW_TIGHTER_LAYOUT_LIMIT);
+	tighter_layout_limit = pref;
+
+	NautilusCanvasContainer *container;
+	container = NAUTILUS_CANVAS_CONTAINER (callback_data);
+
+	invalidate_labels (container);
+	nautilus_canvas_container_request_update_all (container);
+	schedule_redo_layout (container);
+}
+
+static void
+restrict_text_width_limit_changed_callback (gpointer callback_data)
+{
+	NautilusLayoutLevel pref;
+	pref = g_settings_get_enum (nautilus_icon_view_preferences, NAUTILUS_PREFERENCES_ICON_VIEW_RESTRICT_TEXT_WIDTH_LIMIT);
+	restrict_text_width_limit = pref;
+
+	NautilusCanvasContainer *container;
+	container = NAUTILUS_CANVAS_CONTAINER (callback_data);
+
+	invalidate_labels (container);
+	nautilus_canvas_container_request_update_all (container);
+	schedule_redo_layout (container);
+}
+
+static void
 nautilus_canvas_container_init (NautilusCanvasContainer *container)
 {
 	NautilusCanvasContainerDetails *details;
@@ -5575,6 +5682,19 @@ nautilus_canvas_container_init (NautilusCanvasContainer *container)
 					  G_CALLBACK (desktop_text_ellipsis_limit_changed_callback),
 					  NULL);
 		desktop_text_ellipsis_limit_changed_callback (NULL);
+
+		g_signal_connect_swapped (nautilus_icon_view_preferences,
+					  "changed::" NAUTILUS_PREFERENCES_ICON_VIEW_TIGHTER_LAYOUT_LIMIT,
+					  G_CALLBACK (tighter_layout_limit_changed_callback),
+					  container);
+		tighter_layout_limit_changed_callback (container);
+
+		g_signal_connect_swapped (nautilus_icon_view_preferences,
+					  "changed::" NAUTILUS_PREFERENCES_ICON_VIEW_RESTRICT_TEXT_WIDTH_LIMIT,
+					  G_CALLBACK (restrict_text_width_limit_changed_callback),
+					  container);
+		restrict_text_width_limit_changed_callback (container);
+
 
 		setup_prefs = TRUE;
 	}
@@ -6684,6 +6804,18 @@ nautilus_canvas_container_request_update (NautilusCanvasContainer *container,
 		container->details->needs_resort = TRUE;
 		schedule_redo_layout (container);
 	}
+}
+
+NautilusZoomLevel
+nautilus_canvas_container_get_tighter_layout_limit ()
+{
+	return tighter_layout_limit;
+}
+
+NautilusZoomLevel
+nautilus_canvas_container_get_restrict_text_width_limit ()
+{
+	return restrict_text_width_limit;
 }
 
 /* zooming */

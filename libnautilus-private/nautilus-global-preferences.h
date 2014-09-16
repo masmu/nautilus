@@ -93,6 +93,8 @@ enum
 
 /* Icon View */
 #define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL		"default-zoom-level"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_TIGHTER_LAYOUT_LIMIT		"tighter-layout-limit"
+#define NAUTILUS_PREFERENCES_ICON_VIEW_RESTRICT_TEXT_WIDTH_LIMIT	"restrict-text-width-limit"
 
 
 #define NAUTILUS_PREFERENCES_ICON_VIEW_LABELS_BESIDE_ICONS      "labels-beside-icons"
@@ -139,6 +141,7 @@ typedef enum
 #define NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS "show-directory-item-counts"
 #define NAUTILUS_PREFERENCES_SHOW_FILE_THUMBNAILS	"show-image-thumbnails"
 #define NAUTILUS_PREFERENCES_FILE_THUMBNAIL_LIMIT	"thumbnail-limit"
+#define NAUTILUS_PREFERENCES_FILE_THUMBNAIL_ZOOM_LIMIT	"thumbnail-zoom-limit"
 
 typedef enum
 {
