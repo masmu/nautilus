@@ -1457,44 +1457,6 @@ get_max_icon_dimensions (GList *icon_start,
 	}
 }
 
-static void
-get_max_icon_dimensions (GList *icon_start,
-			 GList *icon_end,
-			 double *max_icon_width,
-			 double *max_icon_height,
-			 double *max_text_width,
-			 double *max_text_height,
-			 double *max_bounds_height)
-{
-	NautilusCanvasIcon *icon;
-	EelDRect icon_bounds;
-	EelDRect text_bounds;
-	GList *p;
-	double y1, y2;
-
-	*max_icon_width = *max_text_width = 0.0;
-	*max_icon_height = *max_text_height = 0.0;
-	*max_bounds_height = 0.0;
-
-	/* Would it be worth caching these bounds for the next loop? */
-	for (p = icon_start; p != icon_end; p = p->next) {
-		icon = p->data;
-
-		icon_bounds = nautilus_canvas_item_get_icon_rectangle (icon->item);
-		*max_icon_width = MAX (*max_icon_width, ceil (icon_bounds.x1 - icon_bounds.x0));
-		*max_icon_height = MAX (*max_icon_height, ceil (icon_bounds.y1 - icon_bounds.y0));
-
-		text_bounds = nautilus_canvas_item_get_text_rectangle (icon->item, TRUE);
-		*max_text_width = MAX (*max_text_width, ceil (text_bounds.x1 - text_bounds.x0));
-		*max_text_height = MAX (*max_text_height, ceil (text_bounds.y1 - text_bounds.y0));
-
-		nautilus_canvas_item_get_bounds_for_layout (icon->item,
-								 NULL, &y1,
-								 NULL, &y2);
-		*max_bounds_height = MAX (*max_bounds_height, y2 - y1);
-	}
-}
-
 /* column-wise layout. At the moment, this only works with label-beside-icon (used by "Compact View"). */
 static void
 lay_down_icons_vertical (NautilusCanvasContainer *container,
