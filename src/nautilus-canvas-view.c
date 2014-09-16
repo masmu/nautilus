@@ -65,9 +65,11 @@
 
 enum 
 {
-	PROP_SUPPORTS_AUTO_LAYOUT = 1,
+	PROP_COMPACT = 1,
+	PROP_SUPPORTS_AUTO_LAYOUT,
 	PROP_SUPPORTS_SCALING,
 	PROP_SUPPORTS_KEEP_ALIGNED,
+	PROP_SUPPORTS_LABELS_BESIDE_ICONS,
 	PROP_SUPPORTS_MANUAL_LAYOUT,
 	NUM_PROPERTIES
 };
@@ -99,6 +101,8 @@ struct NautilusCanvasViewDetails
 	GtkActionGroup *canvas_action_group;
 	guint canvas_merge_id;
 
+	gboolean compact;
+
 	gulong clipboard_handler_id;
 
 	GtkWidget *canvas_container;
@@ -107,6 +111,7 @@ struct NautilusCanvasViewDetails
 	gboolean supports_manual_layout;
 	gboolean supports_scaling;
 	gboolean supports_keep_aligned;
+	gboolean supports_labels_beside_icons;
 };
 
 
@@ -497,6 +502,15 @@ nautilus_canvas_view_supports_keep_aligned (NautilusCanvasView *view)
 	return view->details->supports_keep_aligned;
 }
 
+static gboolean
+nautilus_canvas_view_supports_labels_beside_icons (NautilusCanvasView *view)
+{
+	g_return_val_if_fail (NAUTILUS_IS_CANVAS_VIEW (view), FALSE);
+
+	return view->details->supports_labels_beside_icons;
+}
+
+
 static void
 update_layout_menus (NautilusCanvasView *view)
 {
@@ -775,17 +789,37 @@ get_sort_criterion_by_sort_type (NautilusFileSortType sort_type)
 	return &sort_criteria[0];
 }
 
-#define DEFAULT_ZOOM_LEVEL(canvas_view) default_zoom_level
+#define DEFAULT_ZOOM_LEVEL(canvas_view) canvas_view->details->compact ? default_compact_zoom_level : default_zoom_level
 
 static NautilusZoomLevel
 get_default_zoom_level (NautilusCanvasView *canvas_view)
 {
-	NautilusZoomLevel default_zoom_level;
+	NautilusZoomLevel default_zoom_level, default_compact_zoom_level;
 
 	default_zoom_level = g_settings_get_enum (nautilus_icon_view_preferences,
 						  NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL);
+	default_compact_zoom_level = g_settings_get_enum (nautilus_compact_view_preferences,
+							  NAUTILUS_PREFERENCES_COMPACT_VIEW_DEFAULT_ZOOM_LEVEL);
 
 	return CLAMP (DEFAULT_ZOOM_LEVEL(canvas_view), NAUTILUS_ZOOM_LEVEL_SMALLEST, NAUTILUS_ZOOM_LEVEL_LARGEST);
+}
+
+static void
+set_labels_beside_icons (NautilusCanvasView *canvas_view)
+{
+	gboolean labels_beside;
+	if (nautilus_canvas_view_supports_labels_beside_icons (canvas_view)) {
+		labels_beside = canvas_view->details->compact;
+		if (labels_beside) {
+			nautilus_canvas_container_set_label_position
+				(get_canvas_container (canvas_view),
+				 NAUTILUS_CANVAS_LABEL_POSITION_BESIDE);
+		} else {
+			nautilus_canvas_container_set_label_position
+				(get_canvas_container (canvas_view),
+				 NAUTILUS_CANVAS_LABEL_POSITION_UNDER);
+		}
+	}
 }
 
 static void
@@ -810,6 +844,9 @@ nautilus_canvas_view_begin_loading (NautilusView *view)
 
 	g_free (uri);
 
+	nautilus_canvas_container_set_zoom_level (canvas_container,
+						  get_default_zoom_level (canvas_view));
+
 	/* Set the sort mode.
 	 * It's OK not to resort the icons because the
 	 * container doesn't have any icons at this point.
@@ -824,6 +861,8 @@ nautilus_canvas_view_begin_loading (NautilusView *view)
 	nautilus_canvas_container_set_keep_aligned
 		(get_canvas_container (canvas_view), 
 		 nautilus_canvas_view_get_directory_keep_aligned (canvas_view, file));
+
+	set_labels_beside_icons (canvas_view);
 
 	/* We must set auto-layout last, because it invokes the layout_changed 
 	 * callback, which works incorrectly if the other layout criteria are
@@ -1474,6 +1513,54 @@ selection_changed_callback (NautilusCanvasContainer *container,
 	nautilus_view_notify_selection_changed (NAUTILUS_VIEW (canvas_view));
 }
 
+static gboolean
+nautilus_icon_view_scroll_event (GtkWidget *widget,
+			   GdkEventScroll *scroll_event)
+{
+	NautilusCanvasView *canvas_view;
+	GdkEvent *event_copy;
+	GdkEventScroll *scroll_event_copy;
+	gboolean ret;
+
+	canvas_view = NAUTILUS_CANVAS_VIEW (widget);
+
+	if (canvas_view->details->compact &&
+	    (scroll_event->direction == GDK_SCROLL_UP ||
+	     scroll_event->direction == GDK_SCROLL_DOWN ||
+	     scroll_event->direction == GDK_SCROLL_SMOOTH)) {
+		ret = nautilus_view_handle_scroll_event (NAUTILUS_VIEW (canvas_view), scroll_event);
+		if (!ret) {
+			/* in column-wise layout, re-emit vertical mouse scroll events as horizontal ones,
+			 * if they don't bump zoom */
+			event_copy = gdk_event_copy ((GdkEvent *) scroll_event);
+			scroll_event_copy = (GdkEventScroll *) event_copy;
+
+			/* transform vertical integer smooth scroll events into horizontal events */
+			if (scroll_event_copy->direction == GDK_SCROLL_SMOOTH &&
+				   scroll_event_copy->delta_x == 0) {
+				if (scroll_event_copy->delta_y == 1.0) {
+					scroll_event_copy->direction = GDK_SCROLL_DOWN;
+				} else if (scroll_event_copy->delta_y == -1.0) {
+					scroll_event_copy->direction = GDK_SCROLL_UP;
+				}
+			}
+
+			if (scroll_event_copy->direction == GDK_SCROLL_UP) {
+				scroll_event_copy->direction = GDK_SCROLL_LEFT;
+			} else if (scroll_event_copy->direction == GDK_SCROLL_DOWN) {
+				scroll_event_copy->direction = GDK_SCROLL_RIGHT;
+			}
+
+			ret = GTK_WIDGET_CLASS (nautilus_canvas_view_parent_class)->scroll_event (widget, scroll_event_copy);
+			gdk_event_free (event_copy);
+		}
+
+		return ret;
+	}
+
+	return GTK_WIDGET_CLASS (nautilus_canvas_view_parent_class)->scroll_event (widget, scroll_event);
+}
+
 static void
 canvas_container_context_click_selection_callback (NautilusCanvasContainer *container,
 						 GdkEventButton *event,
@@ -1886,8 +1973,8 @@ create_canvas_container (NautilusCanvasView *canvas_view)
 			   GTK_WIDGET (canvas_container));
 
 	nautilus_canvas_view_update_click_mode (canvas_view);
-	nautilus_canvas_container_set_zoom_level (canvas_container,
-						  get_default_zoom_level (canvas_view));
+/*	nautilus_canvas_container_set_zoom_level (canvas_container,
+						  get_default_zoom_level (canvas_view));*/
 
 	gtk_widget_show (GTK_WIDGET (canvas_container));
 
@@ -1980,6 +2067,9 @@ canvas_view_scroll_to_file (NautilusView *view,
 static const char *
 nautilus_canvas_view_get_id (NautilusView *view)
 {
+	if ((NAUTILUS_CANVAS_VIEW (view))->details->compact) {
+		return NAUTILUS_COMPACT_VIEW_ID;
+	}
 	return NAUTILUS_CANVAS_VIEW_ID;
 }
 
@@ -1994,6 +2084,17 @@ nautilus_canvas_view_set_property (GObject         *object,
 	canvas_view = NAUTILUS_CANVAS_VIEW (object);
 
 	switch (prop_id)  {
+	case PROP_COMPACT:
+		canvas_view->details->compact = g_value_get_boolean (value);
+		if (canvas_view->details->compact) {
+			nautilus_canvas_container_set_layout_mode (get_canvas_container (canvas_view),
+								 gtk_widget_get_direction (GTK_WIDGET(canvas_view)) == GTK_TEXT_DIR_RTL ?
+								 NAUTILUS_ICON_LAYOUT_T_B_R_L :
+								 NAUTILUS_ICON_LAYOUT_T_B_L_R);
+			nautilus_canvas_container_set_forced_icon_size (get_canvas_container (canvas_view),
+								      NAUTILUS_ICON_SIZE_SMALLEST);
+		}
+		break;
 	case PROP_SUPPORTS_AUTO_LAYOUT:
 		canvas_view->details->supports_auto_layout = g_value_get_boolean (value);
 		break;
@@ -2005,6 +2106,9 @@ nautilus_canvas_view_set_property (GObject         *object,
 		break;
 	case PROP_SUPPORTS_KEEP_ALIGNED:
 		canvas_view->details->supports_keep_aligned = g_value_get_boolean (value);
+		break;
+	case PROP_SUPPORTS_LABELS_BESIDE_ICONS:
+		canvas_view->details->supports_labels_beside_icons = g_value_get_boolean (value);
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -2051,6 +2155,7 @@ nautilus_canvas_view_class_init (NautilusCanvasViewClass *klass)
 	oclass->finalize = nautilus_canvas_view_finalize;
 
 	GTK_WIDGET_CLASS (klass)->destroy = nautilus_canvas_view_destroy;
+	GTK_WIDGET_CLASS (klass)->scroll_event = nautilus_icon_view_scroll_event;
 	
 	nautilus_view_class->add_file = nautilus_canvas_view_add_file;
 	nautilus_view_class->begin_loading = nautilus_canvas_view_begin_loading;
@@ -2088,6 +2193,13 @@ nautilus_canvas_view_class_init (NautilusCanvasViewClass *klass)
 	nautilus_view_class->get_first_visible_file = canvas_view_get_first_visible_file;
 	nautilus_view_class->scroll_to_file = canvas_view_scroll_to_file;
 
+	properties[PROP_COMPACT] =
+		g_param_spec_boolean ("compact",
+				      "Compact",
+				      "Whether this view provides a compact listing",
+				      FALSE,
+				      G_PARAM_WRITABLE |
+				      G_PARAM_CONSTRUCT_ONLY);
 	properties[PROP_SUPPORTS_AUTO_LAYOUT] =
 		g_param_spec_boolean ("supports-auto-layout",
 				      "Supports auto layout",
@@ -2114,6 +2226,13 @@ nautilus_canvas_view_class_init (NautilusCanvasViewClass *klass)
 				      "Supports keep aligned",
 				      "Whether this view supports keep aligned",
 				      FALSE,
+				      G_PARAM_WRITABLE |
+				      G_PARAM_CONSTRUCT_ONLY);
+	properties[PROP_SUPPORTS_LABELS_BESIDE_ICONS] =
+		g_param_spec_boolean ("supports-labels-beside-icons",
+				      "Supports labels beside icons",
+				      "Whether this view supports labels beside icons",
+				      TRUE,
 				      G_PARAM_WRITABLE |
 				      G_PARAM_CONSTRUCT_ONLY);
 
@@ -2172,5 +2291,15 @@ nautilus_canvas_view_new (NautilusWindowSlot *slot)
 {
 	return g_object_new (NAUTILUS_TYPE_CANVAS_VIEW,
 			     "window-slot", slot,
+			     "compact", FALSE,
+			     NULL);
+}
+
+NautilusView *
+nautilus_compact_view_new (NautilusWindowSlot *slot)
+{
+	return g_object_new (NAUTILUS_TYPE_CANVAS_VIEW,
+			     "window-slot", slot,
+			     "compact", TRUE,
 			     NULL);
 }

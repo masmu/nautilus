@@ -57,7 +57,15 @@ typedef struct {
 } NautilusCanvasPosition;
 
 typedef enum {
+	NAUTILUS_ICON_LAYOUT_L_R_T_B,
+	NAUTILUS_ICON_LAYOUT_R_L_T_B,
+	NAUTILUS_ICON_LAYOUT_T_B_L_R,
+	NAUTILUS_ICON_LAYOUT_T_B_R_L
+} NautilusIconLayoutMode;
+
+typedef enum {
 	NAUTILUS_CANVAS_LABEL_POSITION_UNDER,
+	NAUTILUS_CANVAS_LABEL_POSITION_BESIDE
 } NautilusCanvasLabelPosition;
 
 #define	NAUTILUS_CANVAS_CONTAINER_TYPESELECT_FLUSH_DELAY 1000000
@@ -270,6 +278,8 @@ void              nautilus_canvas_container_set_auto_layout               (Nauti
 gboolean          nautilus_canvas_container_is_keep_aligned               (NautilusCanvasContainer  *container);
 void              nautilus_canvas_container_set_keep_aligned              (NautilusCanvasContainer  *container,
 									   gboolean                keep_aligned);
+void              nautilus_canvas_container_set_layout_mode               (NautilusCanvasContainer  *container,
+									   NautilusIconLayoutMode  mode);
 void              nautilus_canvas_container_set_label_position            (NautilusCanvasContainer  *container,
 									   NautilusCanvasLabelPosition pos);
 void              nautilus_canvas_container_sort                          (NautilusCanvasContainer  *container);
@@ -331,6 +341,9 @@ char*             nautilus_canvas_container_get_icon_description          (Nauti
 gboolean          nautilus_canvas_container_get_allow_moves               (NautilusCanvasContainer  *container);
 void              nautilus_canvas_container_set_allow_moves               (NautilusCanvasContainer  *container,
 									   gboolean                allow_moves);
+
+void              nautilus_canvas_container_set_forced_icon_size          (NautilusCanvasContainer  *container,
+									   int                     forced_icon_size);
 
 gboolean	  nautilus_canvas_container_is_layout_rtl			(NautilusCanvasContainer  *container);
 gboolean	  nautilus_canvas_container_is_layout_vertical		(NautilusCanvasContainer  *container);

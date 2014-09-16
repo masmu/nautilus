@@ -19,6 +19,7 @@
   <enum id="org.gnome.nautilus.FolderView">
     <value nick="icon-view" value="0"/>
     <value nick="list-view" value="1"/>
+    <value nick="compact-view" value="2"/>
   </enum>
 
   <enum id="org.gnome.nautilus.SortOrder">
@@ -50,6 +51,7 @@
     <child name="preferences" schema="org.gnome.nautilus.preferences"/>
     <child name="icon-view" schema="org.gnome.nautilus.icon-view"/>
     <child name="list-view" schema="org.gnome.nautilus.list-view"/>
+    <child name="compact-view" schema="org.gnome.nautilus.compact-view"/>
     <child name="desktop" schema="org.gnome.nautilus.desktop"/>
     <child name="window-state" schema="org.gnome.nautilus.window-state"/>
   </schema>
@@ -146,8 +148,7 @@
     <key name="default-folder-viewer" enum="org.gnome.nautilus.FolderView">
       <aliases>
         <alias value='icon_view' target='icon-view'/>
-        <alias value='compact_view' target='icon-view'/>
-        <alias value='compact-view' target='icon-view'/>
+        <alias value='compact_view' target='compact-view'/>
         <alias value='list_view' target='list-view'/>
       </aliases>
       <default>'icon-view'</default>
@@ -233,7 +234,18 @@
       <_description>Whether a tree should be used for list view navigation instead of a flat list</_description>
     </key>
   </schema>
-
+  <schema path="/org/gnome/nautilus/compact-view/" id="org.gnome.nautilus.compact-view" gettext-domain="nautilus">
+    <key name="default-zoom-level" enum="org.gnome.nautilus.ZoomLevel">
+      <default>'standard'</default>
+      <summary>Default compact view zoom level</summary>
+      <description>Default zoom level used by the compact view.</description>
+    </key>
+    <key name="all-columns-have-same-width" type="b">
+      <default>false</default>
+      <summary>All columns have same width</summary>
+      <description>If this preference is set, all columns in the compact view have the same width. Otherwise, the width of each column is determined seperately.</description>
+    </key>
+  </schema>
   <schema id="org.gnome.nautilus.desktop" path="/org/gnome/nautilus/desktop/" gettext-domain="nautilus">
     <key name="font" type="s">
       <default l10n="messages" context="desktop-font">''</default>

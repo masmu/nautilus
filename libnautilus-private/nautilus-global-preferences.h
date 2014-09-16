@@ -81,16 +81,21 @@ enum
 {
 	NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW,
 	NAUTILUS_DEFAULT_FOLDER_VIEWER_LIST_VIEW,
+	NAUTILUS_DEFAULT_FOLDER_VIEWER_COMPACT_VIEW,
 	NAUTILUS_DEFAULT_FOLDER_VIEWER_OTHER
 };
 
 /* These IIDs are used by the preferences code and in nautilus-application.c */
 #define NAUTILUS_CANVAS_VIEW_IID	"OAFIID:Nautilus_File_Manager_Canvas_View"
 #define NAUTILUS_LIST_VIEW_IID		"OAFIID:Nautilus_File_Manager_List_View"
+#define NAUTILUS_COMPACT_VIEW_IID	"OAFIID:Nautilus_File_Manager_Compact_View"
 
 
 /* Icon View */
 #define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL		"default-zoom-level"
+
+
+#define NAUTILUS_PREFERENCES_ICON_VIEW_LABELS_BESIDE_ICONS      "labels-beside-icons"
 
 /* Which text attributes appear beneath icon names */
 #define NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS				"captions"
@@ -107,6 +112,9 @@ enum
 #define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS		"default-visible-columns"
 #define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER		"default-column-order"
 #define NAUTILUS_PREFERENCES_LIST_VIEW_USE_TREE                         "use-tree-view"
+
+/* List View */
+#define NAUTILUS_PREFERENCES_COMPACT_VIEW_DEFAULT_ZOOM_LEVEL		"default-zoom-level"
 
 enum
 {
@@ -167,6 +175,7 @@ char *nautilus_global_preferences_get_default_folder_viewer_preference_as_iid (v
 extern GSettings *nautilus_preferences;
 extern GSettings *nautilus_icon_view_preferences;
 extern GSettings *nautilus_list_view_preferences;
+extern GSettings *nautilus_compact_view_preferences;
 extern GSettings *nautilus_desktop_preferences;
 extern GSettings *nautilus_window_state;
 extern GSettings *gtk_filechooser_preferences;

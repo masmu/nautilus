@@ -190,6 +190,8 @@ nautilus_window_slot_sync_view_as_menus (NautilusWindowSlot *slot)
 		action = gtk_action_group_get_action (action_group, NAUTILUS_ACTION_VIEW_LIST);
 	} else if (nautilus_window_slot_content_view_matches_iid (slot, NAUTILUS_CANVAS_VIEW_ID)) {
 		action = gtk_action_group_get_action (action_group, NAUTILUS_ACTION_VIEW_GRID);
+	} else if (nautilus_window_slot_content_view_matches_iid (slot, NAUTILUS_COMPACT_VIEW_ID)) {
+		action = gtk_action_group_get_action (action_group, NAUTILUS_ACTION_VIEW_COMPACT);
 	} else {
 		action = NULL;
 	}
