@@ -7317,7 +7317,7 @@ nautilus_canvas_container_set_layout_mode (NautilusCanvasContainer *container,
 	g_return_if_fail (NAUTILUS_IS_CANVAS_CONTAINER (container));
 
 	container->details->layout_mode = mode;
-	invalidate_labels (container);
+	// invalidate_labels (container);
 
 	container->details->needs_resort = TRUE;
 	redo_layout (container);
