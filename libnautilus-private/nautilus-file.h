@@ -211,6 +211,7 @@ gboolean                nautilus_file_should_show_directory_item_count  (Nautilu
 gboolean                nautilus_file_should_show_type                  (NautilusFile                   *file);
 gboolean                nautilus_file_get_directory_item_mime_types     (NautilusFile                   *file,
 									 GList                         **mime_list);
+NautilusZoomLevel       nautilus_file_get_thumbnail_zoom_limit          (void);
 
 void                    nautilus_file_set_search_relevance              (NautilusFile                   *file,
 									 gdouble                         relevance);

@@ -42,10 +42,13 @@
 /* string enum preferences */
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_DEFAULT_VIEW_WIDGET "default_view_combobox"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ICON_VIEW_ZOOM_WIDGET "icon_view_zoom_combobox"
+#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ICON_VIEW_TIGHTER_WIDGET "icon_view_tighter_combobox"
+#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ICON_VIEW_RESTRICT_TEXT_WIDTH_WIDGET "icon_view_restrict_text_width_combobox"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_LIST_VIEW_ZOOM_WIDGET "list_view_zoom_combobox"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_SORT_ORDER_WIDGET "sort_order_combobox"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_FILES_WIDGET "preview_image_combobox"
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_FOLDER_WIDGET "preview_folder_combobox"
+#define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_THUMBNAIL_ZOOM_WIDGET "preview_image_zoom_combobox"
 
 /* bool preferences */
 #define NAUTILUS_FILE_MANAGEMENT_PROPERTIES_FOLDERS_FIRST_WIDGET "sort_folders_first_checkbutton"
@@ -114,6 +117,28 @@ static const char * const executable_text_values[] = {
 	"launch",
 	"display",
 	"ask",
+	NULL
+};
+
+static const char * const zoom_choice_values[] = {
+	"always",
+	"smallest",
+	"smaller",
+	"small",
+	"standard",
+	"large",
+	"larger",
+	"special1",
+	"special2",
+	"special3",
+	"special4",
+	"special5",
+	"special6",
+	"special7",
+	"special8",
+	"special9",
+	"largest",
+	"never",
 	NULL
 };
 
@@ -633,6 +658,14 @@ nautilus_file_management_properties_dialog_setup (GtkBuilder *builder, GtkWindow
 			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ICON_VIEW_ZOOM_WIDGET,
 			   NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL,
 			   (const char **) zoom_values);
+	bind_builder_enum (builder, nautilus_icon_view_preferences,
+			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ICON_VIEW_TIGHTER_WIDGET,
+			   NAUTILUS_PREFERENCES_ICON_VIEW_TIGHTER_LAYOUT_LIMIT,
+			   (const char **) zoom_choice_values);
+	bind_builder_enum (builder, nautilus_icon_view_preferences,
+			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_ICON_VIEW_RESTRICT_TEXT_WIDTH_WIDGET,
+			   NAUTILUS_PREFERENCES_ICON_VIEW_RESTRICT_TEXT_WIDTH_LIMIT,
+			   (const char **) zoom_choice_values);
 	bind_builder_enum (builder, nautilus_list_view_preferences,
 			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_LIST_VIEW_ZOOM_WIDGET,
 			   NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL,
@@ -649,6 +682,10 @@ nautilus_file_management_properties_dialog_setup (GtkBuilder *builder, GtkWindow
 			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_PREVIEW_FOLDER_WIDGET,
 			   NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
 			   (const char **) preview_values);
+	bind_builder_enum (builder, nautilus_preferences,
+			   NAUTILUS_FILE_MANAGEMENT_PROPERTIES_THUMBNAIL_ZOOM_WIDGET,
+			   NAUTILUS_PREFERENCES_FILE_THUMBNAIL_ZOOM_LIMIT,
+			   (const char **) zoom_choice_values);
 
 	bind_builder_radio (builder, nautilus_preferences,
 			    (const char **) click_behavior_components,
