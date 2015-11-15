@@ -45,6 +45,7 @@
 #include <libnautilus-private/nautilus-module.h>
 #include <libnautilus-private/nautilus-monitor.h>
 #include <libnautilus-private/nautilus-profile.h>
+#include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-extension/nautilus-location-widget-provider.h>
 
 G_DEFINE_TYPE (NautilusWindowSlot, nautilus_window_slot, GTK_TYPE_BOX);
@@ -1264,10 +1265,8 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
 
 		mimetype = nautilus_file_get_mime_type (file);
 
-		/* Otherwise, use default */
-		if (slot->details->content_view != NULL) {
-			view_id = g_strdup (nautilus_view_get_view_id (slot->details->content_view));
-		}
+		view_id = nautilus_file_get_metadata
+			(file, NAUTILUS_METADATA_KEY_DEFAULT_VIEW, NULL);
 
 		if (view_id == NULL) {
 			view_id = nautilus_global_preferences_get_default_folder_viewer_preference_as_iid ();
@@ -1683,6 +1682,18 @@ nautilus_window_slot_set_content_view (NautilusWindowSlot *slot,
         }
 
         end_location_change (slot);
+
+        GFile *location;
+        NautilusDirectory *directory;
+        NautilusFile *file;
+
+        location = nautilus_window_slot_get_current_location (slot);
+        directory = nautilus_directory_get (location);
+        file = nautilus_file_get (location);
+
+        nautilus_file_set_metadata
+            (file, NAUTILUS_METADATA_KEY_DEFAULT_VIEW, NULL, id);
+        nautilus_file_unref (file);
 
         nautilus_window_slot_set_allow_stop (slot, TRUE);
 
