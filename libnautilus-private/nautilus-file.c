@@ -117,6 +117,7 @@ static GHashTable *symbolic_links;
 
 static guint64 cached_thumbnail_limit;
 int cached_thumbnail_size;
+int thumbnail_zoom_limit;
 static NautilusSpeedTradeoffValue show_file_thumbs;
 
 static NautilusSpeedTradeoffValue show_directory_item_count;
@@ -4957,6 +4958,12 @@ nautilus_file_get_directory_item_mime_types (NautilusFile *file,
 	return TRUE;
 }
 
+NautilusZoomLevel
+nautilus_file_get_thumbnail_zoom_limit ()
+{
+	return thumbnail_zoom_limit;
+}
+
 gboolean
 nautilus_file_can_get_size (NautilusFile *file)
 {
@@ -7839,6 +7846,20 @@ nautilus_file_list_cancel_call_when_ready (NautilusFileListHandle *handle)
 }
 
 static void
+thumbnail_zoom_limit_changed_callback (gpointer callback_data)
+{
+	NautilusLayoutLevel pref;
+	pref = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_FILE_THUMBNAIL_ZOOM_LIMIT);
+	thumbnail_zoom_limit = pref;
+
+	/* Tell the world that icons might have changed. We could invent a narrower-scope
+	 * signal to mean only "thumbnails might have changed" if this ends up being slow
+	 * for some reason.
+	 */
+	emit_change_signals_for_all_files_in_all_directories ();
+}
+
+static void
 thumbnail_limit_changed_callback (gpointer user_data)
 {
 	g_settings_get (nautilus_preferences,
@@ -7981,6 +8002,11 @@ nautilus_file_class_init (NautilusFileClass *class)
 
 	g_type_class_add_private (class, sizeof (NautilusFileDetails));
 
+	thumbnail_zoom_limit_changed_callback (NULL);
+	g_signal_connect_swapped (nautilus_preferences,
+				  "changed::" NAUTILUS_PREFERENCES_FILE_THUMBNAIL_ZOOM_LIMIT,
+				  G_CALLBACK (thumbnail_zoom_limit_changed_callback),
+				  NULL);
 	thumbnail_limit_changed_callback (NULL);
 	g_signal_connect_swapped (nautilus_preferences,
 				  "changed::" NAUTILUS_PREFERENCES_FILE_THUMBNAIL_LIMIT,
