@@ -9867,6 +9867,8 @@ nautilus_view_new (const gchar		*id,
 
 	if (g_strcmp0 (id, NAUTILUS_CANVAS_VIEW_ID) == 0) {
 		view = nautilus_canvas_view_new (slot);
+	} else if (g_strcmp0 (id, NAUTILUS_COMPACT_VIEW_ID) == 0) {
+		view = nautilus_compact_view_new (slot);
 	} else if (g_strcmp0 (id, NAUTILUS_LIST_VIEW_ID) == 0) {
 		view = nautilus_list_view_new (slot);
 	} else if (g_strcmp0 (id, NAUTILUS_DESKTOP_CANVAS_VIEW_ID) == 0) {

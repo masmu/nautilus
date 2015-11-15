@@ -44,6 +44,7 @@ typedef struct NautilusViewClass NautilusViewClass;
 #endif
 
 #define NAUTILUS_CANVAS_VIEW_ID "OAFIID:Nautilus_File_Manager_Canvas_View"
+#define NAUTILUS_COMPACT_VIEW_ID "OAFIID:Nautilus_File_Manager_Compact_View"
 #define NAUTILUS_DESKTOP_CANVAS_VIEW_ID "OAFIID:Nautilus_File_Manager_Desktop_Canvas_View"
 #define NAUTILUS_LIST_VIEW_ID "OAFIID:Nautilus_File_Manager_List_View"
 

@@ -371,6 +371,8 @@ action_view_radio_changed (GtkRadioAction *action,
 		nautilus_window_slot_set_content_view (slot, NAUTILUS_LIST_VIEW_ID);
 	} else if (g_strcmp0 (name, NAUTILUS_ACTION_VIEW_GRID) == 0) {
 		nautilus_window_slot_set_content_view (slot, NAUTILUS_CANVAS_VIEW_ID);
+	} else if (g_strcmp0 (name, NAUTILUS_ACTION_VIEW_COMPACT) == 0) {
+		nautilus_window_slot_set_content_view (slot, NAUTILUS_COMPACT_VIEW_ID);
 	}
 }
 
@@ -490,7 +492,9 @@ static const GtkRadioActionEntry view_radio_entries[] = {
 	{ NAUTILUS_ACTION_VIEW_LIST, "view-list-symbolic", N_("List"),
 	  "<control>1", N_("View items as a list"), 0 },
 	{ NAUTILUS_ACTION_VIEW_GRID, "view-grid-symbolic", N_("List"),
-	  "<control>2", N_("View items as a grid of icons"), 1 }
+	  "<control>2", N_("View items as a grid of icons"), 1 },
+	{ NAUTILUS_ACTION_VIEW_COMPACT, "view-compact-symbolic", N_("List"),
+	  "<control>3", N_("View items in compact view"), 2 },
 };
 
 static void

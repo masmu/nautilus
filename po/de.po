@@ -3271,6 +3271,10 @@ msgid "D_efault zoom level:"
 msgstr "_Voreingestellte Vergrößerungsstufe:"
 
 #: ../src/nautilus-file-management-properties.ui.h:11
+msgid "Compact View Defaults"
+msgstr "Vorgaben für Kompaktansicht"
+
+#: ../src/nautilus-file-management-properties.ui.h:12
 msgid "Views"
 msgstr "Ansichten"
 
@@ -3373,6 +3377,10 @@ msgstr "_Anzahl der Objekte anzeigen:"
 #: ../src/nautilus-file-management-properties.ui.h:34
 msgid "Preview"
 msgstr "Vorschau"
+
+#: ../src/nautilus-file-management-properties.ui.h:37
+msgid "Compact View"
+msgstr "Kompaktansicht"
 
 #: ../src/nautilus-file-management-properties.ui.h:36
 msgid "Always"
@@ -5502,6 +5510,10 @@ msgstr "Objekte als Liste darstellen"
 #: ../src/nautilus-window-menus.c:624
 msgid "View items as a grid of icons"
 msgstr "Objekte als Raster aus Symbolen darstellen"
+
+#: ../src/nautilus-window-menus.c:628
+msgid "View items in compact view"
+msgstr "Objekte in Kompaktansicht darstellen"
 
 #: ../src/nautilus-window-menus.c:726
 msgid "_Up"

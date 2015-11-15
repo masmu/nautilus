@@ -446,6 +446,9 @@ nautilus_toolbar_constructed (GObject *obj)
 	button = toolbar_create_toolbutton (self, FALSE, TRUE, NAUTILUS_ACTION_VIEW_GRID, NULL);
 	gtk_widget_set_valign (button, GTK_ALIGN_CENTER);
 	gtk_container_add (GTK_CONTAINER (box), button);
+	button = toolbar_create_toolbutton (self, FALSE, TRUE, NAUTILUS_ACTION_VIEW_COMPACT, NULL);
+	gtk_widget_set_valign (button, GTK_ALIGN_CENTER);
+	gtk_container_add (GTK_CONTAINER (box), button);
 	button = toolbar_create_toolbutton (self, TRUE, FALSE, "go-down-symbolic", _("View options"));
 	gtk_widget_set_valign (button, GTK_ALIGN_CENTER);
 	gtk_container_add (GTK_CONTAINER (box), button);

@@ -46,6 +46,7 @@
 #define NAUTILUS_ACTION_SEARCH "Search"
 #define NAUTILUS_ACTION_VIEW_LIST "View List"
 #define NAUTILUS_ACTION_VIEW_GRID "View Grid"
+#define NAUTILUS_ACTION_VIEW_COMPACT "View Compact"
 #define NAUTILUS_ACTION_FOLDER_WINDOW "Folder Window"
 #define NAUTILUS_ACTION_NEW_TAB "New Tab"
 
